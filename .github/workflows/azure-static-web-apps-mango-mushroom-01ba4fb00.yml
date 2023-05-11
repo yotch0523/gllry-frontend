@@ -33,6 +33,10 @@ jobs:
           app_build_command: 'npm run build'
           api_build_command: 'rm -rf ./node_modules/@next/swc-* && rm -rf ./.next/cache'
           ###### End of Repository/Build Configurations ######
+        env:
+          NEXT_PUBLIC_CLIENT_ID: 0824c4c6-7922-4715-9ce9-6a5765914101
+          NEXT_PUBLIC_AUTHORITY: https://stggllry.b2clogin.com/stggllry.onmicrosoft.com/B2C_1_GLLRY_SIGNUP_SIGNIN
+          NEXT_PUBLIC_KNOWN_AUTHORITY: stggllry.b2clogin.com
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
