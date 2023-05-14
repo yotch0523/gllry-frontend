@@ -1,19 +1,30 @@
 import type { AppProps } from 'next/app'
 
 import { InteractionType } from "@azure/msal-browser"
-import { MsalAuthenticationTemplate, MsalProvider, useMsal } from "@azure/msal-react"
+import { MsalAuthenticationTemplate, MsalProvider, useMsal} from "@azure/msal-react"
 
+import Button from '@/components/button'
 import AuthProvider from '@/providers/auth'
 import msalInstance, { loginRequest } from '@/services/msal'
+import useUser from '@/hooks/useUser'
 
 const Header = () => {
-  const { accounts } = useMsal()
-  const username = accounts[0].username
+  const user = useUser()
+  if (user === null || user === undefined)
+  {
+    return (
+      <div>
+        <Button text="ログイン" onClick={async () => msalInstance.loginRedirect(loginRequest)} />
+      </div>
+    )
+  }
+  const name = user.givenName
 
   return (
-    <>
-      Hello, {{ username }} san.
-    </>
+    <div>
+      <span>Hello, { name } san.</span>
+      <Button text="ログアウト" onClick={async () => msalInstance.logoutRedirect()} />
+    </div>
   )
 }
 
