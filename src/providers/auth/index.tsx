@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
 
+import { User } from '@/types/user'
+
 const AuthContext = React.createContext(
   {} as {
-    user: any,
-    updateUser: (user: any) => void
-  }
+    user: User | null | undefined
+    updateUser: (user: User) => void
+  },
 )
 const AuthProvider = ({ children }: any) => {
-  const [user, setUser] = useState<any>(null)
-  const updateUser = (user: any) => {
+  const [user, setUser] = useState<User | null | undefined>(null)
+  const updateUser = (user: User) => {
     setUser(user)
   }
   return (
-    <AuthContext.Provider
-      value={{user, updateUser}}>
-        { children }
+    <AuthContext.Provider value={{ user, updateUser }}>
+      {children}
     </AuthContext.Provider>
   )
 }
