@@ -1,6 +1,8 @@
 import { AccountInfo } from '@azure/msal-browser'
 import { useMsal } from '@azure/msal-react'
 
+import { User } from '@/types/user'
+
 interface Account extends AccountInfo {
   idTokenClaims: {
     aud: string
@@ -15,13 +17,6 @@ interface Account extends AccountInfo {
     tfp: string
     ver: string
   }
-}
-
-export interface User {
-  sub: string
-  familyName: string
-  givenName: string
-  email: string
 }
 
 const useUser = (): User | null | undefined => {
