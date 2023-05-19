@@ -1,36 +1,15 @@
+import { InteractionType } from '@azure/msal-browser'
+import { MsalAuthenticationTemplate, MsalProvider } from '@azure/msal-react'
 import type { AppProps } from 'next/app'
 
-import { InteractionType } from "@azure/msal-browser"
-import { MsalAuthenticationTemplate, MsalProvider, useMsal} from "@azure/msal-react"
-
-import Button from '@/components/button'
+import Header from '@/components/Header'
 import AuthProvider from '@/providers/auth'
 import msalInstance, { loginRequest } from '@/services/msal'
-import useUser from '@/hooks/useUser'
-
-const Header = () => {
-  const user = useUser()
-  if (user === null || user === undefined)
-  {
-    return (
-      <div>
-        <Button text="ログイン" onClick={async () => msalInstance.loginRedirect(loginRequest)} />
-      </div>
-    )
-  }
-  const name = user.givenName
-
-  return (
-    <div>
-      <span>Hello, { name } san.</span>
-      <Button text="ログアウト" onClick={async () => msalInstance.logoutRedirect()} />
-    </div>
-  )
-}
+import '@/styles/global.scss'
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const authRequest = {
-    ...loginRequest
+    ...loginRequest,
   }
   return (
     <MsalProvider instance={msalInstance}>
@@ -40,7 +19,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           authenticationRequest={authRequest}
         >
           <Header />
-          <Component {...pageProps} />
+          <div className="p-4">
+            <Component {...pageProps} />
+          </div>
         </MsalAuthenticationTemplate>
       </AuthProvider>
     </MsalProvider>
