@@ -37,6 +37,9 @@ jobs:
           NEXT_PUBLIC_CLIENT_ID: ${{ secrets.AZURE_ACTIVE_DIRECTORY_B2C_GLLRY_CLIENT_ID }}
           NEXT_PUBLIC_AUTHORITY: https://stggllry.b2clogin.com/stggllry.onmicrosoft.com/B2C_1_GLLRY_SIGNUP_SIGNIN
           NEXT_PUBLIC_KNOWN_AUTHORITY: stggllry.b2clogin.com
+          NEXT_PUBLIC_IMAGE_API_READ_SCOPE: https://stggllry.onmicrosoft.com/api/Image.Read
+          NEXT_PUBLIC_IMAGE_API_WRITE_SCOPE: https://stggllry.onmicrosoft.com/api/Image.Write
+          NEXT_PUBLIC_API_BASE_URL: https://gllry.azurewebsites.net
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
