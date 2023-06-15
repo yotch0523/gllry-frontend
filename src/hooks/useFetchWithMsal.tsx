@@ -56,6 +56,7 @@ const useFetchWithMsal = <T,>(msalRequest: RedirectRequest) => {
         const bearer = `Bearer ${accessTokenResponse.accessToken}`
         headers.append('Access-Control-Allow-Credentials', 'true')
         headers.append('Authorization', bearer)
+        headers.append('x-functions-key', process.env.NEXT_PUBLIC_IMAGE_FUNCTIONS_KEY ?? '')
         headers.append(
           'Access-Control-Allow-Origin',
           `${process.env.NEXT_PUBLIC_API_BASE_URL}`,
