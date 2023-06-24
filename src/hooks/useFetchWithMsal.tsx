@@ -6,7 +6,7 @@ import {
   SilentRequest,
 } from '@azure/msal-browser'
 import { useMsal, useMsalAuthentication } from '@azure/msal-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
@@ -26,10 +26,12 @@ const useFetchWithMsal = <T,>(msalRequest: RedirectRequest) => {
   const [data, setData] = useState<T | null>(null)
 
   const account = accounts.length > 0 ? accounts[0] : undefined
-  const tokenRequest: SilentRequest = {
-    scopes: config.b2cScopes,
-    account,
-  }
+  const tokenRequest: SilentRequest = useMemo(() => {
+    return {
+      scopes: config.b2cScopes,
+      account,
+    }
+  }, [account])
   const { result, error: msalError } = useMsalAuthentication(
     InteractionType.Redirect,
     {

@@ -9,7 +9,7 @@ import { initContainerClient } from '@/services/storage'
 export const config = {
   api: {
     bodyParser: false,
-    responseLimit: '15mb'
+    responseLimit: '15mb',
   },
 }
 
@@ -35,19 +35,18 @@ const postHandler: NextApiHandler = async (
     if (contentType?.includes('multipart/form-data')) {
       const { files } = await parseMultipleNodeRequest(userId, req)
       // request for saving to db ...
-      const response = await save(userId, files, req)
+      await save(userId, files, req)
     } else {
       // body = await readBody(req)
     }
-    res.status(200).send(
-      {
-        message: 'Success',
-        data: {
-          userId,
-          percentage: 100,
-          isCompleted: true,
-        }
-      })
+    res.status(200).send({
+      message: 'Success',
+      data: {
+        userId,
+        percentage: 100,
+        isCompleted: true,
+      },
+    })
   } catch (error) {
     console.log('error has occured ', error)
     return { isSuccess: false }
