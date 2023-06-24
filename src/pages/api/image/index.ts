@@ -19,38 +19,30 @@ const postHandler: NextApiHandler = async (
   req: NextApiRequest,
   res: NextApiResponse,
 ) => {
-  try {
-    const userId =
-      req.headers instanceof Headers
-        ? req.headers.get('user-id')
-        : req.headers['user-id']
-    if (!(typeof userId === 'string'))
-      return res.status(401).send({ message: 'Unauthorized' })
-    const contentType =
-      req.headers instanceof Headers
-        ? req.headers.get('content-type')
-        : req.headers['content-type']
+  const userId =
+    req.headers instanceof Headers
+      ? req.headers.get('user-id')
+      : req.headers['user-id']
+  if (!(typeof userId === 'string'))
+    return res.status(401).send({ message: 'Unauthorized' })
+  const contentType =
+    req.headers instanceof Headers
+      ? req.headers.get('content-type')
+      : req.headers['content-type']
 
+  if (contentType?.includes('multipart/form-data')) {
     // upload blob
-    if (contentType?.includes('multipart/form-data')) {
-      const { files } = await parseMultipleNodeRequest(userId, req)
-      // request for saving to db ...
-      await save(userId, files, req)
-    } else {
-      // body = await readBody(req)
-    }
-    res.status(200).send({
-      message: 'Success',
-      data: {
-        userId,
-        percentage: 100,
-        isCompleted: true,
-      },
-    })
-  } catch (error) {
-    console.log('error has occured ', error)
-    return { isSuccess: false }
+    const { files } = await parseMultipleNodeRequest(userId, req)
+    // save request
+    await save(userId, files, req)
   }
+  res.status(200).send({
+    message: 'Success',
+    data: {
+      userId,
+      progress: 100,
+    },
+  })
 }
 
 const parseMultipleNodeRequest = (
