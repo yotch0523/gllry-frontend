@@ -3,9 +3,6 @@ import { HTTP_METHOD, isHTTPMethod } from 'next/dist/server/web/http'
 
 import { errorHandler } from '@/pages/api/errorHandler'
 
-export interface Data<T> {
-  data: T
-}
 export type Handlers = {
   [key in HTTP_METHOD]?: NextApiHandler
 }
