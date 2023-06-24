@@ -6,7 +6,7 @@ import {
   SilentRequest,
 } from '@azure/msal-browser'
 import { useMsal, useMsalAuthentication } from '@azure/msal-react'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
@@ -26,10 +26,12 @@ const useFetchWithMsal = <T,>(msalRequest: RedirectRequest) => {
   const [data, setData] = useState<T | null>(null)
 
   const account = accounts.length > 0 ? accounts[0] : undefined
-  const tokenRequest: SilentRequest = {
-    scopes: config.b2cScopes,
-    account,
-  }
+  const tokenRequest: SilentRequest = useMemo(() => {
+    return {
+      scopes: config.b2cScopes,
+      account,
+    }
+  }, [account])
   const { result, error: msalError } = useMsalAuthentication(
     InteractionType.Redirect,
     {
@@ -54,22 +56,15 @@ const useFetchWithMsal = <T,>(msalRequest: RedirectRequest) => {
           throw new InteractionRequiredAuthError()
         const headers = new Headers()
         const bearer = `Bearer ${accessTokenResponse.accessToken}`
-        headers.append('Access-Control-Allow-Credentials', 'true')
         headers.append('Authorization', bearer)
-        headers.append(
-          'Access-Control-Allow-Origin',
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}`,
-        )
+        headers.append('user-id', account?.idTokenClaims?.sub ?? '')
         const options = {
           method: method,
           headers: headers,
           body: data,
         }
         setIsLoading(true)
-        const response = await fetch(
-          process.env.NEXT_PUBLIC_API_BASE_URL + endpoint,
-          options,
-        )
+        const response = await fetch(endpoint, options)
         const result = await response.json()
         setData(result.data)
 
@@ -97,7 +92,7 @@ const useFetchWithMsal = <T,>(msalRequest: RedirectRequest) => {
     isLoading,
     error,
     data,
-    execute: useCallback(execute, [result, msalError]), // to avoid infinite calls when inside a `useEffect`
+    execute: useCallback(execute, [instance, result, msalError, account]), // to avoid infinite calls when inside a `useEffect`
   }
 }
 
