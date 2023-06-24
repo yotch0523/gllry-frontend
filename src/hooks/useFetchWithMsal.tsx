@@ -54,23 +54,15 @@ const useFetchWithMsal = <T,>(msalRequest: RedirectRequest) => {
           throw new InteractionRequiredAuthError()
         const headers = new Headers()
         const bearer = `Bearer ${accessTokenResponse.accessToken}`
-        headers.append('Access-Control-Allow-Credentials', 'true')
         headers.append('Authorization', bearer)
-        headers.append('x-functions-key', process.env.NEXT_PUBLIC_IMAGE_FUNCTIONS_KEY ?? '')
-        headers.append(
-          'Access-Control-Allow-Origin',
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}`,
-        )
+        headers.append('user-id', account?.idTokenClaims?.sub ?? '')
         const options = {
           method: method,
           headers: headers,
           body: data,
         }
         setIsLoading(true)
-        const response = await fetch(
-          process.env.NEXT_PUBLIC_API_BASE_URL + endpoint,
-          options,
-        )
+        const response = await fetch(endpoint, options)
         const result = await response.json()
         setData(result.data)
 
@@ -98,7 +90,7 @@ const useFetchWithMsal = <T,>(msalRequest: RedirectRequest) => {
     isLoading,
     error,
     data,
-    execute: useCallback(execute, [result, msalError]), // to avoid infinite calls when inside a `useEffect`
+    execute: useCallback(execute, [instance, result, msalError, account]), // to avoid infinite calls when inside a `useEffect`
   }
 }
 
